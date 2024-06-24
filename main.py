@@ -88,6 +88,7 @@ if __name__ == "__main__":
     device: Nanolib.DeviceId
     device_ids = result_device_scan.getResult()
     device = device_ids[0]
+    #Test Commit
     
     device_handle = accessor.addDevice(device).getResult()
     result_device_connection = accessor.connectDevice(device_handle)
