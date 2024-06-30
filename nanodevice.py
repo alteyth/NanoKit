@@ -151,7 +151,7 @@ class NanoDevice:
         self.accessor.write_number(self.device_handle, 3, Nanolib.OdIndex(0x6060, 0x00), 8)
 
         # Imposta la velocity
-        self.accessor.write_number(self.device_handle, 100, Nanolib.OdIndex(0x60FF, 0x00), 32)
+        self.accessor.write_number(self.device_handle, velocity, Nanolib.OdIndex(0x60FF, 0x00), 32)
 
         # Switcha la macchina a stati in "operation enabled"
         self.accessor.write_number(self.device_handle, 6, Nanolib.OdIndex(0x6040, 0x00), 16)
