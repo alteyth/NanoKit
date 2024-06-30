@@ -1,5 +1,10 @@
 from nanotec_nanolib import Nanolib
 
+# ========================================================================== #
+# QUESTO È IL VECCHIO MAIN, INCLUSO NEL CASO FOSSE NECESSARIO A SCOPO DI TEST
+# ========================================================================== #
+
+
 def convert_to_signed_32bit(unsigned_integer):
     # Verifica se il numero unsigned è maggiore di 2^31 - 1
     if unsigned_integer > 0x7FFFFFFF:
