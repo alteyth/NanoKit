@@ -29,7 +29,9 @@ def convert_to_signed_32bit(unsigned_integer):
     return signed_integer
 
 class NanoDevice:
+    # Questo è la classe principale. Ha tutti i metodi necessari per la connessione e l'uso del controller
     def __init__(self):
+        # Qui vengono istanziati i componenti necessari alla connessione e gestione del controller
         self.accessor: Nanolib.NanoLibAccessor = Nanolib.getNanoLibAccessor()
         self.accessor.setLoggingLevel(Nanolib.LogLevel_Off)
         self.device_handle: Nanolib.DeviceHandle
@@ -37,9 +39,9 @@ class NanoDevice:
 
 
     def create_bus_hardware_options(self, bus_hw_id: Nanolib.BusHardwareId):
+        # Questa funzione è standard e serve a creare le opzioni necessarie alla connessione al bus
         bus_hardware_option = Nanolib.BusHardwareOptions()
         
-        # now add all options necessary for opening the bus hardware
         if (bus_hw_id.getProtocol() == Nanolib.BUS_HARDWARE_ID_PROTOCOL_CANOPEN):
             # in case of CAN bus it is the baud rate
             bus_hardware_option.addOption(
@@ -70,20 +72,24 @@ class NanoDevice:
         return bus_hardware_option
     
     def connect(self):
+        # Questa è la funzione che si occupa di connettersi prima al bus e poi al dispositivo stesso (il controller)
         result_bus = self.accessor.listAvailableBusHardware()
         bus_ids = result_bus.getResult()
 
+        # Scan dei Bus disponibili e scelta del nostro
         for id in bus_ids:
             if id.getName() == "USB Bus" and id.getProtocol() == "MODBUS VCP":
                 self.bus = id
         bus_hw_options = self.create_bus_hardware_options(self.bus)
 
+        # Apertura del Bus
         result_bus_open = self.accessor.openBusHardwareWithProtocol(self.bus, bus_hw_options)
         if(result_bus_open.hasError()):
             print("ERRORE nell'apertura del bus")
         else:
             print(f"Bus {self.bus.getName()} con protocollo {self.bus.getProtocol()} aperto con successo!")
         
+        # Scan dei dispositivi disponibili
         result_device_scan = self.accessor.scanDevices(self.bus, callbackScanBus)
         if (result_device_scan.hasError()):
             print("ERRORE nello scan dei Devices!")
@@ -92,16 +98,19 @@ class NanoDevice:
         device = device_ids[0]
         self.device_handle = self.accessor.addDevice(device).getResult()
 
+        # Connessione al dispositivo completata 
         result_device_connection = self.accessor.connectDevice(self.device_handle)
         if (result_device_connection.hasError()):
             print("ERRORE nella connessione al Device")
     
     def get_od_value(self, index, subindex = 0x00):
+        # Questa funzione legge direttamente dall'Object Dictionary
         value = self.accessor.readNumber(self.device_handle, Nanolib.OdIndex(index, subindex)).getResult()
         value = convert_to_signed_32bit(value)
         return value
 
     def get_operation_mode(self):
+        # Legge dall'Object Dictionary tramite la funzione precedente e indica la modalità operativa attuale
         value = self.get_od_value(0x6063)
         match value:
             case -2:
@@ -132,5 +141,6 @@ class NanoDevice:
                 print(f"Modalità Operativa Attuale: Cyclic Synchronous Torque")
 
     def disconnect(self):
+        # Qui viene disconnesso il dispositivo e chiuso il Bus
         self.accessor.disconnectDevice(self.device_handle)
         self.accessor.closeBusHardware(self.bus)
