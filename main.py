@@ -7,4 +7,6 @@ if __name__ == "__main__":
 
     Controller.get_operation_mode()
 
+    Controller.rotate(4, 50)
+
     Controller.disconnect()

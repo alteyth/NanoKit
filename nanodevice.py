@@ -141,28 +141,28 @@ class NanoDevice:
             case 10:
                 print(f"Modalità Operativa Attuale: Cyclic Synchronous Torque")
 
-    def rotate(self, time: int, velocity: int):
+    def rotate(self, duration, velocity):
         # Questa funzione fa girare il motore per il tempo indicato
 
         # Stoppa eventuali programmi NanoJ al momento in esecuzione sul controller
-        self.accessor.write_number(self.device_handle, 0, Nanolib.OdIndex(0x2300, 0x00), 32)
+        self.accessor.writeNumber(self.device_handle, 0, Nanolib.OdIndex(0x2300, 0x00), 32)
         
         # Va in modalità Velocity
-        self.accessor.write_number(self.device_handle, 3, Nanolib.OdIndex(0x6060, 0x00), 8)
+        self.accessor.writeNumber(self.device_handle, 3, Nanolib.OdIndex(0x6060, 0x00), 8)
 
         # Imposta la velocity
-        self.accessor.write_number(self.device_handle, velocity, Nanolib.OdIndex(0x60FF, 0x00), 32)
+        self.accessor.writeNumber(self.device_handle, velocity, Nanolib.OdIndex(0x60FF, 0x00), 32)
 
         # Switcha la macchina a stati in "operation enabled"
-        self.accessor.write_number(self.device_handle, 6, Nanolib.OdIndex(0x6040, 0x00), 16)
-        self.accessor.write_number(self.device_handle, 7, Nanolib.OdIndex(0x6040, 0x00), 16)
+        self.accessor.writeNumber(self.device_handle, 6, Nanolib.OdIndex(0x6040, 0x00), 16)
+        self.accessor.writeNumber(self.device_handle, 7, Nanolib.OdIndex(0x6040, 0x00), 16)
 
         # Il motore gira per un tempo = time
-        self.write_number(self.device_handle, 0xF, Nanolib.OdIndex(0x6040, 0x00), 16)
-        time.sleep(time)
+        self.accessor.writeNumber(self.device_handle, 0xF, Nanolib.OdIndex(0x6040, 0x00), 16)
+        time.sleep(duration)
 
         # Il motore viene fermato
-        self.accessor.write_number(self.device_handle, 0, Nanolib.OdIndex(0x6040, 0x00), 16)
+        self.accessor.writeNumber(self.device_handle, 0, Nanolib.OdIndex(0x6040, 0x00), 16)
 
     def disconnect(self):
         # Qui viene disconnesso il dispositivo e chiuso il Bus
