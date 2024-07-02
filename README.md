@@ -18,13 +18,4 @@ Per utilizzare NanoKit, importa le classi `NanoDevice` e `UnitMapper` nel tuo sc
 
 ```python
 from NanoKit import NanoDevice, UnitMapper
-
-# Esempio di utilizzo di NanoDevice per controllare un motore Modbus USB
-controller = NanoDevice()
-controller.connect()  # Connessione al dispositivo
-
-# Esempio di utilizzo di UnitMapper per convertire unità di misura in incrementi
-angle_in_degrees = 45
-increment_value = UnitMapper.convert_to_increment(angle_in_degrees)
-print(f"Valore dell'incremento per un angolo di {angle_in_degrees} gradi: {increment_value}")
 ```
