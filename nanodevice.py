@@ -164,6 +164,31 @@ class NanoDevice:
         # Il motore viene fermato
         self.accessor.writeNumber(self.device_handle, 0, Nanolib.OdIndex(0x6040, 0x00), 16)
 
+    def reach_position_relative(self, increment, velocity = 100):
+        # Questa funzione fa spostare il motore in modo relativo alla posizione corrente alla velocità desiderata
+
+        # Stoppa eventuali programmi NanoJ al momento in esecuzione sul controller
+        self.accessor.writeNumber(self.device_handle, 0, Nanolib.OdIndex(0x2300, 0x00), 32)
+
+        # Va in modalità Profile Position
+        self.accessor.writeNumber(self.device_handle, 1, Nanolib.OdIndex(0x6060, 0x00), 8)
+
+        # Switcha la macchina a stati in "operation enabled"
+        self.accessor.writeNumber(self.device_handle, 6, Nanolib.OdIndex(0x6040, 0x00), 16)
+        self.accessor.writeNumber(self.device_handle, 7, Nanolib.OdIndex(0x6040, 0x00), 16)
+        self.accessor.writeNumber(self.device_handle, 0xF, Nanolib.OdIndex(0x6040, 0x00), 16)
+
+        # Indica al motore di muoversi verso la posizione indicata in modo RELATIVO
+        self.accessor.writeNumber(self.device_handle, 0x5F, Nanolib.OdIndex(0x6040, 0x00), 16)
+        while(True):
+            status = self.accessor.readNumber(self.device_handle, Nanolib.OdIndex(0x6041, 0x00))
+            if ((status & 0x1400) == 0x1400):
+                break
+
+        # Mette il motore in fermo
+        self.accessor.writeNumber(self.device_handle, 6, Nanolib.OdIndex(0x6040, 0x00), 16)
+
+
     def disconnect(self):
         # Qui viene disconnesso il dispositivo e chiuso il Bus
         self.accessor.disconnectDevice(self.device_handle)
