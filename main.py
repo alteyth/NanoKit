@@ -1,12 +1,13 @@
-from nanodevice import NanoDevice
+from NanoKit import NanoDevice, UnitMapper
 
 if __name__ == "__main__":
-    Controller = NanoDevice()
+    controller = NanoDevice()
+    unitMapper = UnitMapper()
 
-    Controller.connect()
+    controller.connect()
 
-    Controller.get_operation_mode()
+    controller.get_operation_mode()
 
-    Controller.rotate(4, 50)
+    controller.rotate(4, 50)
 
-    Controller.disconnect()
+    controller.disconnect()
